@@ -1,0 +1,1499 @@
+{
+	"info": {
+		"_postman_id": "327ff7b0-173e-48a5-86c8-a3cc43867f86",
+		"name": "More than 1 user/car",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25046348"
+	},
+	"item": [
+		{
+			"name": "Get cars brands",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"url\", \"https://qauto.forstudy.space/api\");\r",
+							"\r",
+							"let cardata =  [\"Porsche Cayenne 1323\", \"Audi R8 12222\" , \"Audi TT 121212\", \"BMW 3 5000\", \"BMW 5 50000\", \"Fiat Ducato 100000\", \"Fiat Panda 30003\", \"Porsche 911 2000\", \"Porsche Panamera 10\", \"Ford Focus 150050\"];\r",
+							"\r",
+							"let Local_Car_Brand_NameS =[]\r",
+							"let Local_Car_Model_NameS =[]\r",
+							"let Local_Car_MileageS =[]\r",
+							"\r",
+							"for(let element of cardata){\r",
+							"    Local_Car_Brand_NameS.push(element.split(\" \")[0])\r",
+							"    Local_Car_Model_NameS.push(element.split(\" \")[1])\r",
+							"    Local_Car_MileageS.push(Number(element.split(\" \")[2]))\r",
+							"}\r",
+							"\r",
+							"pm.collectionVariables.set(\"Car_Brand_NameS\", Local_Car_Brand_NameS);\r",
+							"pm.collectionVariables.set(\"Car_Model_NameS\", Local_Car_Model_NameS);\r",
+							"pm.collectionVariables.set(\"Car_MileageS\", Local_Car_MileageS);\r",
+							"\r",
+							"pm.collectionVariables.set(\"car_counter\", 0);\r",
+							"\r",
+							"pm.collectionVariables.set(\"cardata_counter\", 0);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"var jsonData = pm.response.json().data;\r",
+							"pm.test(\"Data lenght verification\", function () {\r",
+							"    pm.expect(jsonData.length).to.eql(5);\r",
+							"});\r",
+							"let Local_Car_Brand_IdS = []\r",
+							"for (let car_brand_name of pm.collectionVariables.get(\"Car_Brand_NameS\")){\r",
+							"    for (let element of jsonData){\r",
+							"        if(element.title == car_brand_name){\r",
+							"            Local_Car_Brand_IdS.push(element.id)\r",
+							"            break\r",
+							"        }\r",
+							"    }\r",
+							"\r",
+							"}\r",
+							"pm.collectionVariables.set(\"Car_Brand_IdS\", Local_Car_Brand_IdS);\r",
+							"\r",
+							"pm.test(\"Car Brand IdS lenght verification\", function () {\r",
+							"    pm.expect(pm.collectionVariables.get(\"Car_Brand_IdS\").length).to.eql(pm.collectionVariables.get(\"Car_Brand_NameS\").length);\r",
+							"    pm.expect(pm.collectionVariables.get(\"Car_Brand_IdS\")).to.exist;\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/cars/brands",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars",
+						"brands"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get cars models",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json().data;\r",
+							"let Local_Car_Model_IdS = []\r",
+							"for(let i in pm.collectionVariables.get(\"Car_Model_NameS\")){\r",
+							"    let car_model_name = pm.collectionVariables.get(\"Car_Model_NameS\")[i]\r",
+							"    for(let element of jsonData){\r",
+							"        if(element.title == car_model_name && element.carBrandId == pm.collectionVariables.get(\"Car_Brand_IdS\")[i]){\r",
+							"            Local_Car_Model_IdS.push(element.id)\r",
+							"            break\r",
+							"        }\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"pm.collectionVariables.set(\"Car_Model_IdS\", Local_Car_Model_IdS);\r",
+							"\r",
+							"pm.test(\"Car Model IdS lenght verification\", function () {\r",
+							"    pm.expect(pm.collectionVariables.get(\"Car_Model_IdS\").length).to.eql(pm.collectionVariables.get(\"Car_Model_NameS\").length);\r",
+							"    pm.expect(pm.collectionVariables.get(\"Car_Model_IdS\")).to.exist;\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/cars/models",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars",
+						"models"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"useremail\", \"kordamasha@gmail.com\");\r",
+							"pm.collectionVariables.set(\"password\", \"Qwerty12345\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"}); \r",
+							"pm.test(\"User is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.userId;\r",
+							"    pm.collectionVariables.set(\"userId\", jsonData);\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Marusha\",\r\n  \"lastName\": \"Korda\",\r\n  \"email\": \"{{useremail}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"repeatPassword\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/signup",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create  car 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Car is created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Car Id is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.id;\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data\r",
+							"\r",
+							"let LocalActual_CarBrandIdS = []\r",
+							"let LocalActual_CarModelIdS = []\r",
+							"let LocalActual_CarMileageS = []\r",
+							"\r",
+							"LocalActual_CarBrandIdS.push(jsonData.carBrandId)\r",
+							"pm.collectionVariables.set(\"Actual_CarBrandIdS\", LocalActual_CarBrandIdS);\r",
+							"\r",
+							"LocalActual_CarModelIdS.push(jsonData.carModelId)\r",
+							"pm.collectionVariables.set(\"Actual_CarModelIdS\", LocalActual_CarModelIdS);\r",
+							"\r",
+							"LocalActual_CarMileageS.push(jsonData.initialMileage)\r",
+							"pm.collectionVariables.set(\"Actual_CarMileageS\", LocalActual_CarMileageS);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let index = pm.collectionVariables.get(\"car_counter\");\r",
+							"pm.collectionVariables.set(\"car_brand_Id\", pm.collectionVariables.get(\"Car_Brand_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_model_id\", pm.collectionVariables.get(\"Car_Model_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_mileage\", pm.collectionVariables.get(\"Car_MileageS\")[index]);\r",
+							"\r",
+							"index +=1\r",
+							"pm.collectionVariables.set(\"car_counter\", index);\r",
+							"\r",
+							"let LocalExpected_CarBrandIdS = []\r",
+							"let LocalExpected_CarModelIdS = []\r",
+							"let LocalExpected_CarMileageS = []\r",
+							"\r",
+							"let indexData = pm.collectionVariables.get(\"cardata_counter\");\r",
+							"\r",
+							"LocalExpected_CarBrandIdS.push(pm.collectionVariables.get(\"Car_Brand_IdS\")[indexData])\r",
+							"pm.collectionVariables.set(\"Expected_CarBrandIdS\", LocalExpected_CarBrandIdS);\r",
+							"\r",
+							"LocalExpected_CarModelIdS.push(pm.collectionVariables.get(\"Car_Model_IdS\")[indexData])\r",
+							"pm.collectionVariables.set(\"Expected_CarModelIdS\", LocalExpected_CarModelIdS);\r",
+							"\r",
+							"LocalExpected_CarMileageS.push(pm.collectionVariables.get(\"Car_MileageS\")[indexData])\r",
+							"pm.collectionVariables.set(\"Expected_CarMileageS\", LocalExpected_CarMileageS);\r",
+							"\r",
+							"indexData +=1\r",
+							"pm.collectionVariables.set(\"cardata_counter\", indexData);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carBrandId\": {{car_brand_Id}},\r\n  \"carModelId\": {{car_model_id}},\r\n  \"mileage\": {{car_mileage}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/cars",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create  car 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Car is created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Car Id is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.id;\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data\r",
+							"\r",
+							"let LocalActual_CarBrandIdS = []\r",
+							"let LocalActual_CarModelIdS = []\r",
+							"let LocalActual_CarMileageS = []\r",
+							"\r",
+							"LocalActual_CarBrandIdS.push((pm.collectionVariables.get(\"Actual_CarBrandIdS\")),(jsonData.carBrandId))\r",
+							"pm.collectionVariables.set(\"Actual_CarBrandIdS\", LocalActual_CarBrandIdS);\r",
+							"\r",
+							"LocalActual_CarModelIdS.push((pm.collectionVariables.get(\"Actual_CarModelIdS\")), (jsonData.carModelId))\r",
+							"pm.collectionVariables.set(\"Actual_CarModelIdS\", LocalActual_CarModelIdS);\r",
+							"\r",
+							"LocalActual_CarMileageS.push((pm.collectionVariables.get(\"Actual_CarMileageS\")), (jsonData.initialMileage))\r",
+							"pm.collectionVariables.set(\"Actual_CarMileageS\", LocalActual_CarMileageS);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let index = pm.collectionVariables.get(\"car_counter\");\r",
+							"pm.collectionVariables.set(\"car_brand_Id\", pm.collectionVariables.get(\"Car_Brand_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_model_id\", pm.collectionVariables.get(\"Car_Model_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_mileage\", pm.collectionVariables.get(\"Car_MileageS\")[index]);\r",
+							"\r",
+							"index +=1\r",
+							"pm.collectionVariables.set(\"car_counter\", index);\r",
+							"\r",
+							"let indexData = pm.collectionVariables.get(\"cardata_counter\");\r",
+							"\r",
+							"let LocalExpected_CarBrandIdS = []\r",
+							"let LocalExpected_CarModelIdS = []\r",
+							"let LocalExpected_CarMileageS = []\r",
+							"\r",
+							"LocalExpected_CarBrandIdS.push((pm.collectionVariables.get(\"Expected_CarBrandIdS\")), (pm.collectionVariables.get(\"Car_Brand_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarBrandIdS\", LocalExpected_CarBrandIdS);\r",
+							"\r",
+							"LocalExpected_CarModelIdS.push((pm.collectionVariables.get(\"Expected_CarModelIdS\")), (pm.collectionVariables.get(\"Car_Model_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarModelIdS\", LocalExpected_CarModelIdS);\r",
+							"\r",
+							"LocalExpected_CarMileageS.push((pm.collectionVariables.get(\"Expected_CarMileageS\")), (pm.collectionVariables.get(\"Car_MileageS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarMileageS\", LocalExpected_CarMileageS);\r",
+							"\r",
+							"indexData +=1\r",
+							"pm.collectionVariables.set(\"cardata_counter\", indexData);\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carBrandId\": {{car_brand_Id}},\r\n  \"carModelId\": {{car_model_id}},\r\n  \"mileage\": {{car_mileage}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/cars",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create  car 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Car is created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Car Id is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.id;\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data\r",
+							"\r",
+							"let LocalActual_CarBrandIdS = []\r",
+							"let LocalActual_CarModelIdS = []\r",
+							"let LocalActual_CarMileageS = []\r",
+							"\r",
+							"LocalActual_CarBrandIdS.push((pm.collectionVariables.get(\"Actual_CarBrandIdS\")),(jsonData.carBrandId))\r",
+							"pm.collectionVariables.set(\"Actual_CarBrandIdS\", LocalActual_CarBrandIdS);\r",
+							"\r",
+							"LocalActual_CarModelIdS.push((pm.collectionVariables.get(\"Actual_CarModelIdS\")), (jsonData.carModelId))\r",
+							"pm.collectionVariables.set(\"Actual_CarModelIdS\", LocalActual_CarModelIdS);\r",
+							"\r",
+							"LocalActual_CarMileageS.push((pm.collectionVariables.get(\"Actual_CarMileageS\")), (jsonData.initialMileage))\r",
+							"pm.collectionVariables.set(\"Actual_CarMileageS\", LocalActual_CarMileageS);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let index = pm.collectionVariables.get(\"car_counter\");\r",
+							"pm.collectionVariables.set(\"car_brand_Id\", pm.collectionVariables.get(\"Car_Brand_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_model_id\", pm.collectionVariables.get(\"Car_Model_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_mileage\", pm.collectionVariables.get(\"Car_MileageS\")[index]);\r",
+							"\r",
+							"index +=1\r",
+							"pm.collectionVariables.set(\"car_counter\", index);\r",
+							"\r",
+							"let indexData = pm.collectionVariables.get(\"cardata_counter\");\r",
+							"\r",
+							"let LocalExpected_CarBrandIdS = []\r",
+							"let LocalExpected_CarModelIdS = []\r",
+							"let LocalExpected_CarMileageS = []\r",
+							"\r",
+							"LocalExpected_CarBrandIdS.push((pm.collectionVariables.get(\"Expected_CarBrandIdS\")), (pm.collectionVariables.get(\"Car_Brand_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarBrandIdS\", LocalExpected_CarBrandIdS);\r",
+							"\r",
+							"LocalExpected_CarModelIdS.push((pm.collectionVariables.get(\"Expected_CarModelIdS\")), (pm.collectionVariables.get(\"Car_Model_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarModelIdS\", LocalExpected_CarModelIdS);\r",
+							"\r",
+							"LocalExpected_CarMileageS.push((pm.collectionVariables.get(\"Expected_CarMileageS\")), (pm.collectionVariables.get(\"Car_MileageS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarMileageS\", LocalExpected_CarMileageS);\r",
+							"\r",
+							"indexData +=1\r",
+							"pm.collectionVariables.set(\"cardata_counter\", indexData);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carBrandId\": {{car_brand_Id}},\r\n  \"carModelId\": {{car_model_id}},\r\n  \"mileage\": {{car_mileage}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/cars",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create  car 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Car is created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Car Id is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.id;\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data\r",
+							"\r",
+							"let LocalActual_CarBrandIdS = []\r",
+							"let LocalActual_CarModelIdS = []\r",
+							"let LocalActual_CarMileageS = []\r",
+							"\r",
+							"LocalActual_CarBrandIdS.push((pm.collectionVariables.get(\"Actual_CarBrandIdS\")),(jsonData.carBrandId))\r",
+							"pm.collectionVariables.set(\"Actual_CarBrandIdS\", LocalActual_CarBrandIdS);\r",
+							"\r",
+							"LocalActual_CarModelIdS.push((pm.collectionVariables.get(\"Actual_CarModelIdS\")), (jsonData.carModelId))\r",
+							"pm.collectionVariables.set(\"Actual_CarModelIdS\", LocalActual_CarModelIdS);\r",
+							"\r",
+							"LocalActual_CarMileageS.push((pm.collectionVariables.get(\"Actual_CarMileageS\")), (jsonData.initialMileage))\r",
+							"pm.collectionVariables.set(\"Actual_CarMileageS\", LocalActual_CarMileageS);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let index = pm.collectionVariables.get(\"car_counter\");\r",
+							"pm.collectionVariables.set(\"car_brand_Id\", pm.collectionVariables.get(\"Car_Brand_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_model_id\", pm.collectionVariables.get(\"Car_Model_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_mileage\", pm.collectionVariables.get(\"Car_MileageS\")[index]);\r",
+							"\r",
+							"index +=1\r",
+							"pm.collectionVariables.set(\"car_counter\", index);\r",
+							"\r",
+							"let indexData = pm.collectionVariables.get(\"cardata_counter\");\r",
+							"\r",
+							"let LocalExpected_CarBrandIdS = []\r",
+							"let LocalExpected_CarModelIdS = []\r",
+							"let LocalExpected_CarMileageS = []\r",
+							"\r",
+							"LocalExpected_CarBrandIdS.push((pm.collectionVariables.get(\"Expected_CarBrandIdS\")), (pm.collectionVariables.get(\"Car_Brand_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarBrandIdS\", LocalExpected_CarBrandIdS);\r",
+							"\r",
+							"LocalExpected_CarModelIdS.push((pm.collectionVariables.get(\"Expected_CarModelIdS\")), (pm.collectionVariables.get(\"Car_Model_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarModelIdS\", LocalExpected_CarModelIdS);\r",
+							"\r",
+							"LocalExpected_CarMileageS.push((pm.collectionVariables.get(\"Expected_CarMileageS\")), (pm.collectionVariables.get(\"Car_MileageS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarMileageS\", LocalExpected_CarMileageS);\r",
+							"\r",
+							"indexData +=1\r",
+							"pm.collectionVariables.set(\"cardata_counter\", indexData);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carBrandId\": {{car_brand_Id}},\r\n  \"carModelId\": {{car_model_id}},\r\n  \"mileage\": {{car_mileage}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/cars",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create  car 5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Car is created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Car Id is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.id;\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data\r",
+							"\r",
+							"let LocalActual_CarBrandIdS = []\r",
+							"let LocalActual_CarModelIdS = []\r",
+							"let LocalActual_CarMileageS = []\r",
+							"\r",
+							"LocalActual_CarBrandIdS.push((pm.collectionVariables.get(\"Actual_CarBrandIdS\")),(jsonData.carBrandId))\r",
+							"pm.collectionVariables.set(\"Actual_CarBrandIdS\", LocalActual_CarBrandIdS);\r",
+							"\r",
+							"LocalActual_CarModelIdS.push((pm.collectionVariables.get(\"Actual_CarModelIdS\")), (jsonData.carModelId))\r",
+							"pm.collectionVariables.set(\"Actual_CarModelIdS\", LocalActual_CarModelIdS);\r",
+							"\r",
+							"LocalActual_CarMileageS.push((pm.collectionVariables.get(\"Actual_CarMileageS\")), (jsonData.initialMileage))\r",
+							"pm.collectionVariables.set(\"Actual_CarMileageS\", LocalActual_CarMileageS);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let index = pm.collectionVariables.get(\"car_counter\");\r",
+							"pm.collectionVariables.set(\"car_brand_Id\", pm.collectionVariables.get(\"Car_Brand_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_model_id\", pm.collectionVariables.get(\"Car_Model_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_mileage\", pm.collectionVariables.get(\"Car_MileageS\")[index]);\r",
+							"\r",
+							"index +=1\r",
+							"pm.collectionVariables.set(\"car_counter\", index);\r",
+							"\r",
+							"let indexData = pm.collectionVariables.get(\"cardata_counter\");\r",
+							"\r",
+							"let LocalExpected_CarBrandIdS = []\r",
+							"let LocalExpected_CarModelIdS = []\r",
+							"let LocalExpected_CarMileageS = []\r",
+							"\r",
+							"LocalExpected_CarBrandIdS.push((pm.collectionVariables.get(\"Expected_CarBrandIdS\")), (pm.collectionVariables.get(\"Car_Brand_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarBrandIdS\", LocalExpected_CarBrandIdS);\r",
+							"\r",
+							"LocalExpected_CarModelIdS.push((pm.collectionVariables.get(\"Expected_CarModelIdS\")), (pm.collectionVariables.get(\"Car_Model_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarModelIdS\", LocalExpected_CarModelIdS);\r",
+							"\r",
+							"LocalExpected_CarMileageS.push((pm.collectionVariables.get(\"Expected_CarMileageS\")), (pm.collectionVariables.get(\"Car_MileageS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarMileageS\", LocalExpected_CarMileageS);\r",
+							"\r",
+							"indexData +=1\r",
+							"pm.collectionVariables.set(\"cardata_counter\", indexData);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carBrandId\": {{car_brand_Id}},\r\n  \"carModelId\": {{car_model_id}},\r\n  \"mileage\": {{car_mileage}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/cars",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"User session successfully ended\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/auth/logout",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create another user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"another_useremail\", \"korda.m@yahoo.com\");\r",
+							"pm.collectionVariables.set(\"another_password\", \"Qwerty12345\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"}); \r",
+							"pm.test(\"Another user is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.userId;\r",
+							"    pm.collectionVariables.set(\"Another_userId\", jsonData);\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Maria\",\r\n  \"lastName\": \"Korda\",\r\n  \"email\": \"{{another_useremail}}\",\r\n  \"password\": \"{{another_password}}\",\r\n  \"repeatPassword\": \"{{another_password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/signup",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create another car 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Another car is created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Another car Id is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.id;\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data\r",
+							"\r",
+							"let LocalActual_CarBrandIdS = []\r",
+							"let LocalActual_CarModelIdS = []\r",
+							"let LocalActual_CarMileageS = []\r",
+							"\r",
+							"LocalActual_CarBrandIdS.push((pm.collectionVariables.get(\"Actual_CarBrandIdS\")),(jsonData.carBrandId))\r",
+							"pm.collectionVariables.set(\"Actual_CarBrandIdS\", LocalActual_CarBrandIdS);\r",
+							"\r",
+							"LocalActual_CarModelIdS.push((pm.collectionVariables.get(\"Actual_CarModelIdS\")), (jsonData.carModelId))\r",
+							"pm.collectionVariables.set(\"Actual_CarModelIdS\", LocalActual_CarModelIdS);\r",
+							"\r",
+							"LocalActual_CarMileageS.push((pm.collectionVariables.get(\"Actual_CarMileageS\")), (jsonData.initialMileage))\r",
+							"pm.collectionVariables.set(\"Actual_CarMileageS\", LocalActual_CarMileageS);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let index = pm.collectionVariables.get(\"car_counter\");\r",
+							"pm.collectionVariables.set(\"car_brand_Id\", pm.collectionVariables.get(\"Car_Brand_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_model_id\", pm.collectionVariables.get(\"Car_Model_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_mileage\", pm.collectionVariables.get(\"Car_MileageS\")[index]);\r",
+							"\r",
+							"index +=1\r",
+							"pm.collectionVariables.set(\"car_counter\", index);\r",
+							"\r",
+							"let indexData = pm.collectionVariables.get(\"cardata_counter\");\r",
+							"\r",
+							"let LocalExpected_CarBrandIdS = []\r",
+							"let LocalExpected_CarModelIdS = []\r",
+							"let LocalExpected_CarMileageS = []\r",
+							"\r",
+							"LocalExpected_CarBrandIdS.push((pm.collectionVariables.get(\"Expected_CarBrandIdS\")), (pm.collectionVariables.get(\"Car_Brand_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarBrandIdS\", LocalExpected_CarBrandIdS);\r",
+							"\r",
+							"LocalExpected_CarModelIdS.push((pm.collectionVariables.get(\"Expected_CarModelIdS\")), (pm.collectionVariables.get(\"Car_Model_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarModelIdS\", LocalExpected_CarModelIdS);\r",
+							"\r",
+							"LocalExpected_CarMileageS.push((pm.collectionVariables.get(\"Expected_CarMileageS\")), (pm.collectionVariables.get(\"Car_MileageS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarMileageS\", LocalExpected_CarMileageS);\r",
+							"\r",
+							"indexData +=1\r",
+							"pm.collectionVariables.set(\"cardata_counter\", indexData);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carBrandId\": {{car_brand_Id}},\r\n  \"carModelId\": {{car_model_id}},\r\n  \"mileage\": {{car_mileage}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/cars",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create another car 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Another car is created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Another car Id is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.id;\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data\r",
+							"\r",
+							"let LocalActual_CarBrandIdS = []\r",
+							"let LocalActual_CarModelIdS = []\r",
+							"let LocalActual_CarMileageS = []\r",
+							"\r",
+							"LocalActual_CarBrandIdS.push((pm.collectionVariables.get(\"Actual_CarBrandIdS\")),(jsonData.carBrandId))\r",
+							"pm.collectionVariables.set(\"Actual_CarBrandIdS\", LocalActual_CarBrandIdS);\r",
+							"\r",
+							"LocalActual_CarModelIdS.push((pm.collectionVariables.get(\"Actual_CarModelIdS\")), (jsonData.carModelId))\r",
+							"pm.collectionVariables.set(\"Actual_CarModelIdS\", LocalActual_CarModelIdS);\r",
+							"\r",
+							"LocalActual_CarMileageS.push((pm.collectionVariables.get(\"Actual_CarMileageS\")), (jsonData.initialMileage))\r",
+							"pm.collectionVariables.set(\"Actual_CarMileageS\", LocalActual_CarMileageS);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let index = pm.collectionVariables.get(\"car_counter\");\r",
+							"pm.collectionVariables.set(\"car_brand_Id\", pm.collectionVariables.get(\"Car_Brand_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_model_id\", pm.collectionVariables.get(\"Car_Model_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_mileage\", pm.collectionVariables.get(\"Car_MileageS\")[index]);\r",
+							"\r",
+							"index +=1\r",
+							"pm.collectionVariables.set(\"car_counter\", index);\r",
+							"\r",
+							"let indexData = pm.collectionVariables.get(\"cardata_counter\");\r",
+							"\r",
+							"let LocalExpected_CarBrandIdS = []\r",
+							"let LocalExpected_CarModelIdS = []\r",
+							"let LocalExpected_CarMileageS = []\r",
+							"\r",
+							"LocalExpected_CarBrandIdS.push((pm.collectionVariables.get(\"Expected_CarBrandIdS\")), (pm.collectionVariables.get(\"Car_Brand_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarBrandIdS\", LocalExpected_CarBrandIdS);\r",
+							"\r",
+							"LocalExpected_CarModelIdS.push((pm.collectionVariables.get(\"Expected_CarModelIdS\")), (pm.collectionVariables.get(\"Car_Model_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarModelIdS\", LocalExpected_CarModelIdS);\r",
+							"\r",
+							"LocalExpected_CarMileageS.push((pm.collectionVariables.get(\"Expected_CarMileageS\")), (pm.collectionVariables.get(\"Car_MileageS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarMileageS\", LocalExpected_CarMileageS);\r",
+							"\r",
+							"indexData +=1\r",
+							"pm.collectionVariables.set(\"cardata_counter\", indexData);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carBrandId\": {{car_brand_Id}},\r\n  \"carModelId\": {{car_model_id}},\r\n  \"mileage\": {{car_mileage}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/cars",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create another car 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Another car is created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Another car Id is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.id;\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data\r",
+							"\r",
+							"let LocalActual_CarBrandIdS = []\r",
+							"let LocalActual_CarModelIdS = []\r",
+							"let LocalActual_CarMileageS = []\r",
+							"\r",
+							"LocalActual_CarBrandIdS.push((pm.collectionVariables.get(\"Actual_CarBrandIdS\")),(jsonData.carBrandId))\r",
+							"pm.collectionVariables.set(\"Actual_CarBrandIdS\", LocalActual_CarBrandIdS);\r",
+							"\r",
+							"LocalActual_CarModelIdS.push((pm.collectionVariables.get(\"Actual_CarModelIdS\")), (jsonData.carModelId))\r",
+							"pm.collectionVariables.set(\"Actual_CarModelIdS\", LocalActual_CarModelIdS);\r",
+							"\r",
+							"LocalActual_CarMileageS.push((pm.collectionVariables.get(\"Actual_CarMileageS\")), (jsonData.initialMileage))\r",
+							"pm.collectionVariables.set(\"Actual_CarMileageS\", LocalActual_CarMileageS);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let index = pm.collectionVariables.get(\"car_counter\");\r",
+							"pm.collectionVariables.set(\"car_brand_Id\", pm.collectionVariables.get(\"Car_Brand_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_model_id\", pm.collectionVariables.get(\"Car_Model_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_mileage\", pm.collectionVariables.get(\"Car_MileageS\")[index]);\r",
+							"\r",
+							"index +=1\r",
+							"pm.collectionVariables.set(\"car_counter\", index);\r",
+							"\r",
+							"let indexData = pm.collectionVariables.get(\"cardata_counter\");\r",
+							"\r",
+							"let LocalExpected_CarBrandIdS = []\r",
+							"let LocalExpected_CarModelIdS = []\r",
+							"let LocalExpected_CarMileageS = []\r",
+							"\r",
+							"LocalExpected_CarBrandIdS.push((pm.collectionVariables.get(\"Expected_CarBrandIdS\")), (pm.collectionVariables.get(\"Car_Brand_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarBrandIdS\", LocalExpected_CarBrandIdS);\r",
+							"\r",
+							"LocalExpected_CarModelIdS.push((pm.collectionVariables.get(\"Expected_CarModelIdS\")), (pm.collectionVariables.get(\"Car_Model_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarModelIdS\", LocalExpected_CarModelIdS);\r",
+							"\r",
+							"LocalExpected_CarMileageS.push((pm.collectionVariables.get(\"Expected_CarMileageS\")), (pm.collectionVariables.get(\"Car_MileageS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarMileageS\", LocalExpected_CarMileageS);\r",
+							"\r",
+							"indexData +=1\r",
+							"pm.collectionVariables.set(\"cardata_counter\", indexData);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carBrandId\": {{car_brand_Id}},\r\n  \"carModelId\": {{car_model_id}},\r\n  \"mileage\": {{car_mileage}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/cars",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create another car 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Another car is created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Another car Id is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.id;\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data\r",
+							"\r",
+							"let LocalActual_CarBrandIdS = []\r",
+							"let LocalActual_CarModelIdS = []\r",
+							"let LocalActual_CarMileageS = []\r",
+							"\r",
+							"LocalActual_CarBrandIdS.push((pm.collectionVariables.get(\"Actual_CarBrandIdS\")),(jsonData.carBrandId))\r",
+							"pm.collectionVariables.set(\"Actual_CarBrandIdS\", LocalActual_CarBrandIdS);\r",
+							"\r",
+							"LocalActual_CarModelIdS.push((pm.collectionVariables.get(\"Actual_CarModelIdS\")), (jsonData.carModelId))\r",
+							"pm.collectionVariables.set(\"Actual_CarModelIdS\", LocalActual_CarModelIdS);\r",
+							"\r",
+							"LocalActual_CarMileageS.push((pm.collectionVariables.get(\"Actual_CarMileageS\")), (jsonData.initialMileage))\r",
+							"pm.collectionVariables.set(\"Actual_CarMileageS\", LocalActual_CarMileageS);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let index = pm.collectionVariables.get(\"car_counter\");\r",
+							"pm.collectionVariables.set(\"car_brand_Id\", pm.collectionVariables.get(\"Car_Brand_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_model_id\", pm.collectionVariables.get(\"Car_Model_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_mileage\", pm.collectionVariables.get(\"Car_MileageS\")[index]);\r",
+							"\r",
+							"index +=1\r",
+							"pm.collectionVariables.set(\"car_counter\", index);\r",
+							"\r",
+							"let indexData = pm.collectionVariables.get(\"cardata_counter\");\r",
+							"\r",
+							"let LocalExpected_CarBrandIdS = []\r",
+							"let LocalExpected_CarModelIdS = []\r",
+							"let LocalExpected_CarMileageS = []\r",
+							"\r",
+							"LocalExpected_CarBrandIdS.push((pm.collectionVariables.get(\"Expected_CarBrandIdS\")), (pm.collectionVariables.get(\"Car_Brand_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarBrandIdS\", LocalExpected_CarBrandIdS);\r",
+							"\r",
+							"LocalExpected_CarModelIdS.push((pm.collectionVariables.get(\"Expected_CarModelIdS\")), (pm.collectionVariables.get(\"Car_Model_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarModelIdS\", LocalExpected_CarModelIdS);\r",
+							"\r",
+							"LocalExpected_CarMileageS.push((pm.collectionVariables.get(\"Expected_CarMileageS\")), (pm.collectionVariables.get(\"Car_MileageS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarMileageS\", LocalExpected_CarMileageS);\r",
+							"\r",
+							"indexData +=1\r",
+							"pm.collectionVariables.set(\"cardata_counter\", indexData);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carBrandId\": {{car_brand_Id}},\r\n  \"carModelId\": {{car_model_id}},\r\n  \"mileage\": {{car_mileage}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/cars",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create another car 5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Another car is created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Another car Id is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.id;\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data\r",
+							"\r",
+							"let LocalActual_CarBrandIdS = []\r",
+							"let LocalActual_CarModelIdS = []\r",
+							"let LocalActual_CarMileageS = []\r",
+							"\r",
+							"LocalActual_CarBrandIdS.push((pm.collectionVariables.get(\"Actual_CarBrandIdS\")),(jsonData.carBrandId))\r",
+							"pm.collectionVariables.set(\"Actual_CarBrandIdS\", LocalActual_CarBrandIdS);\r",
+							"\r",
+							"LocalActual_CarModelIdS.push((pm.collectionVariables.get(\"Actual_CarModelIdS\")), (jsonData.carModelId))\r",
+							"pm.collectionVariables.set(\"Actual_CarModelIdS\", LocalActual_CarModelIdS);\r",
+							"\r",
+							"LocalActual_CarMileageS.push((pm.collectionVariables.get(\"Actual_CarMileageS\")), (jsonData.initialMileage))\r",
+							"pm.collectionVariables.set(\"Actual_CarMileageS\", LocalActual_CarMileageS);\r",
+							"\r",
+							"pm.test(\"CarData Verification\", function () {\r",
+							"    pm.expect(pm.collectionVariables.get(\"Expected_CarBrandIdS\")).to.eql(pm.collectionVariables.get(\"Actual_CarBrandIdS\"));\r",
+							"    pm.expect(pm.collectionVariables.get(\"Actual_CarBrandIdS\")).to.exist;\r",
+							"   \r",
+							"    pm.expect(pm.collectionVariables.get(\"Expected_CarModelIdS\")).to.eql(pm.collectionVariables.get(\"Actual_CarModelIdS\"));\r",
+							"    pm.expect(pm.collectionVariables.get(\"Actual_CarModelIdS\")).to.exist;\r",
+							"   \r",
+							"    pm.expect(pm.collectionVariables.get(\"Expected_CarMileageS\")).to.eql(pm.collectionVariables.get(\"Actual_CarMileageS\"));\r",
+							"    pm.expect(pm.collectionVariables.get(\"Actual_CarMileageS\")).to.exist;\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let index = pm.collectionVariables.get(\"car_counter\");\r",
+							"pm.collectionVariables.set(\"car_brand_Id\", pm.collectionVariables.get(\"Car_Brand_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_model_id\", pm.collectionVariables.get(\"Car_Model_IdS\")[index]);\r",
+							"pm.collectionVariables.set(\"car_mileage\", pm.collectionVariables.get(\"Car_MileageS\")[index]);\r",
+							"\r",
+							"index +=1\r",
+							"pm.collectionVariables.set(\"car_counter\", index);\r",
+							"\r",
+							"let indexData = pm.collectionVariables.get(\"cardata_counter\");\r",
+							"\r",
+							"let LocalExpected_CarBrandIdS = []\r",
+							"let LocalExpected_CarModelIdS = []\r",
+							"let LocalExpected_CarMileageS = []\r",
+							"\r",
+							"LocalExpected_CarBrandIdS.push((pm.collectionVariables.get(\"Expected_CarBrandIdS\")), (pm.collectionVariables.get(\"Car_Brand_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarBrandIdS\", LocalExpected_CarBrandIdS);\r",
+							"\r",
+							"LocalExpected_CarModelIdS.push((pm.collectionVariables.get(\"Expected_CarModelIdS\")), (pm.collectionVariables.get(\"Car_Model_IdS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarModelIdS\", LocalExpected_CarModelIdS);\r",
+							"\r",
+							"LocalExpected_CarMileageS.push((pm.collectionVariables.get(\"Expected_CarMileageS\")), (pm.collectionVariables.get(\"Car_MileageS\")[indexData]))\r",
+							"pm.collectionVariables.set(\"Expected_CarMileageS\", LocalExpected_CarMileageS);\r",
+							"\r",
+							"indexData +=1\r",
+							"pm.collectionVariables.set(\"cardata_counter\", indexData);\r",
+							"\r",
+							"// console.log(pm.collectionVariables.get(\"Expected_CarBrandIdS\"))\r",
+							"// console.log(pm.collectionVariables.get(\"Expected_CarModelIdS\"))\r",
+							"// console.log(pm.collectionVariables.get(\"Expected_CarMileageS\"))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carBrandId\": {{car_brand_Id}},\r\n  \"carModelId\": {{car_model_id}},\r\n  \"mileage\": {{car_mileage}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/cars",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout another user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Another user session successfully ended\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/auth/logout",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SignIn user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"UserId exist\", function () {\r",
+							"    var jsonData = pm.response.json().data.userId;\r",
+							"    pm.expect(jsonData).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"{{useremail}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"remember\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/signin",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SignIn another user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Another userId exist\", function () {\r",
+							"    var jsonData = pm.response.json().data.userId;\r",
+							"    pm.expect(jsonData).to.eql(pm.collectionVariables.get(\"Another_userId\"));\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"{{another_useremail}}\",\r\n  \"password\": \"{{another_password}}\",\r\n  \"remember\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/signin",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete another user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": ""
+		},
+		{
+			"key": "useremail",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "another_useremail",
+			"value": ""
+		},
+		{
+			"key": "another_password",
+			"value": ""
+		},
+		{
+			"key": "Another_userId",
+			"value": ""
+		},
+		{
+			"key": "Car_Brand_NameS",
+			"value": ""
+		},
+		{
+			"key": "Car_Model_NameS",
+			"value": ""
+		},
+		{
+			"key": "Car_MileageS",
+			"value": ""
+		},
+		{
+			"key": "Car_Brand_IdS",
+			"value": ""
+		},
+		{
+			"key": "Car_Model_IdS",
+			"value": ""
+		},
+		{
+			"key": "car_counter",
+			"value": ""
+		},
+		{
+			"key": "car_brand_Id",
+			"value": ""
+		},
+		{
+			"key": "car_model_id",
+			"value": ""
+		},
+		{
+			"key": "car_mileage",
+			"value": ""
+		},
+		{
+			"key": "Expected_CarBrandIdS",
+			"value": ""
+		},
+		{
+			"key": "Expected_CarModelIdS",
+			"value": ""
+		},
+		{
+			"key": "Expected_CarMileageS",
+			"value": ""
+		},
+		{
+			"key": "Actual_CarBrandIdS",
+			"value": ""
+		},
+		{
+			"key": "cardata_counter",
+			"value": ""
+		},
+		{
+			"key": "E",
+			"value": ""
+		},
+		{
+			"key": "Actual_CarModelIdS",
+			"value": ""
+		},
+		{
+			"key": "Actual_CarMileageS",
+			"value": ""
+		}
+	]
+}
