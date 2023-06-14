@@ -4,7 +4,8 @@ This repository was created to show my practice skills in using Postman and test
 ### Collection contains:
 1. POST, GET, DELETE requests;
 2. Creating collection variables using json response data and their use in subsequent requests;
-3. Created test scripts:
+3. Create new car, verification of correctness initialMileage, mileage, carBrandId, carModelId, create an expense for a car and verify all the expense parameters.
+4. Created test scripts:
    - status codes,
    - response text data,
    - JSON value check,
