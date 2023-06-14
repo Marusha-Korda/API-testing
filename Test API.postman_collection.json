@@ -1,0 +1,500 @@
+{
+	"info": {
+		"_postman_id": "10f66ca6-9e83-443b-aeba-178f2d4ab0b7",
+		"name": "Test API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24926599"
+	},
+	"item": [
+		{
+			"name": "Get cars brands",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Data lenght verification\", function () {\r",
+							"    var jsonData = pm.response.json().data;\r",
+							"    pm.expect(jsonData.length).to.eql(5);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"url\", \"https://qauto.forstudy.space/api\");\r",
+							"let cardata=\"BMW X5 10000\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followOriginalHttpMethod": false
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/cars/brands",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars",
+						"brands"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get cars models",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followOriginalHttpMethod": false
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/cars/models",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars",
+						"models"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create new user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"}); \r",
+							"pm.test(\"User is created\", function () {\r",
+							"    var jsonData = pm.response.json().data.userId;\r",
+							"    pm.collectionVariables.set(\"userId\", jsonData);\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"useremail\", \"kordamasha@gmail.com\");\r",
+							"pm.collectionVariables.set(\"password\", \"Marushak220\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"John\",\r\n  \"lastName\": \"Dou\",\r\n  \"email\": \"{{useremail}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"repeatPassword\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/signup",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create new car",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"Expected_Car_BrandId\", 1);\r",
+							"pm.collectionVariables.set(\"Expected_Car_ModelId\", 1);\r",
+							"pm.collectionVariables.set(\"Expected_Car_Mileage\", 122);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"var jsonData = pm.response.json().data;\r",
+							"let actualcarbtandId = jsonData.carBrandId;\r",
+							"pm.test(\"Car Brand Id Verification\", function () {\r",
+							"    pm.expect(pm.collectionVariables.get(\"Expected_Car_BrandId\")).to.eql(actualcarbtandId);\r",
+							"    pm.expect(actualcarbtandId).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data;\r",
+							"let actualcarModelId = jsonData.carModelId;\r",
+							"pm.test(\"Car Model Id Verification\", function () {\r",
+							"    pm.expect(pm.collectionVariables.get(\"Expected_Car_ModelId\")).to.eql(actualcarModelId);\r",
+							"    pm.expect(actualcarModelId).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data;\r",
+							"let actualInitialMileage = jsonData.initialMileage;\r",
+							"pm.test(\"Car Initial Mileage Verification\", function () {\r",
+							"    pm.expect(pm.collectionVariables.get(\"Expected_Car_Mileage\")).to.eql(actualInitialMileage);\r",
+							"    pm.expect(actualInitialMileage).to.exist;\r",
+							"});\r",
+							"var jsonData = pm.response.json().data;\r",
+							"let actualMileage = jsonData.mileage;\r",
+							"pm.test(\"Car Mileage Verification\", function () {\r",
+							"    pm.expect(pm.collectionVariables.get(\"Expected_Car_Mileage\")).to.eql(actualMileage);\r",
+							"    pm.expect(actualMileage).to.exist;\r",
+							"});\r",
+							"pm.test(\"CarId Verification \", function () {\r",
+							"    var jsonData = pm.response.json().data.id;\r",
+							"    pm.collectionVariables.set(\"Expected_CarId\", jsonData);\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							"pm.test(\"Car_Date_Creation\", function () {\r",
+							"    var jsonData = pm.response.json().data.carCreatedAt;\r",
+							"    pm.collectionVariables.set(\"Expected_Car_Date_Creation\", jsonData);\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carBrandId\": {{Expected_Car_BrandId}},\r\n  \"carModelId\": {{Expected_Car_ModelId}},\r\n  \"mileage\": {{Expected_Car_Mileage}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/cars",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create an expense",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"Expected_Mileage\", 130);\r",
+							"pm.collectionVariables.set(\"Expected_Liters\", 11);\r",
+							"pm.collectionVariables.set(\"Expected_TotalCost\", 11);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Expense Id is created\", function () {",
+							"    var jsonData = pm.response.json().data.id;",
+							"    pm.expect(jsonData).to.exist;",
+							"});",
+							"var jsonData = pm.response.json().data;",
+							"let actualcarId = jsonData.carId;",
+							"pm.test(\"Expense CarId Verification\", function () {",
+							"    pm.expect(pm.collectionVariables.get(\"Expected_CarId\")).to.eql(actualcarId);",
+							"    pm.expect(actualcarId).to.exist;",
+							"});",
+							"var jsonData = pm.response.json().data;",
+							"let actualreportedDate = jsonData.reportedAt;",
+							"pm.test(\"Expense Reported Date Verification\", function () {",
+							"    pm.expect(pm.collectionVariables.get(\"Expected_Car_Date_Creation\")).to.eql(actualreportedDate);",
+							"    pm.expect(actualreportedDate).to.exist;",
+							"});",
+							"var jsonData = pm.response.json().data;",
+							"let actualmileage = jsonData.mileage;",
+							"pm.test(\"Expense Mileage Verification\", function () {",
+							"    pm.expect(pm.collectionVariables.get(\"Expected_Mileage\")).to.eql(actualmileage);",
+							"    pm.expect(actualmileage).to.exist;",
+							"});",
+							"var jsonData = pm.response.json().data;",
+							"let actualliters = jsonData.liters;",
+							"pm.test(\"Expense Liters Verification\", function () {",
+							"    pm.expect(pm.collectionVariables.get(\"Expected_Liters\")).to.eql(actualliters);",
+							"    pm.expect(actualliters).to.exist;",
+							"});",
+							"var jsonData = pm.response.json().data;",
+							"let actualtotalCost = jsonData.totalCost;",
+							"pm.test(\"Expense Total Cost Verification\", function () {",
+							"    pm.expect(pm.collectionVariables.get(\"Expected_TotalCost\")).to.eql(actualtotalCost);",
+							"    pm.expect(actualtotalCost).to.exist;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"carId\": {{Expected_CarId}},\r\n  \"reportedAt\": \"{{Expected_Car_Date_Creation}}\",\r\n  \"mileage\": {{Expected_Mileage}},\r\n  \"liters\": {{Expected_Liters}},\r\n  \"totalCost\": {{Expected_TotalCost}},\r\n  \"forceMileage\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/expenses",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"expenses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/auth/logout",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Signin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"UserId is crested\", function () {\r",
+							"    var jsonData = pm.response.json().data.userId;\r",
+							"    pm.expect(jsonData).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+							"    pm.expect(jsonData).to.exist;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"{{useremail}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"remember\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/signin",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "url",
+			"value": ""
+		},
+		{
+			"key": "useremail",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "Expected_Car_BrandId",
+			"value": ""
+		},
+		{
+			"key": "Expected_Car_ModelId",
+			"value": ""
+		},
+		{
+			"key": "Expected_Car_Mileage",
+			"value": ""
+		},
+		{
+			"key": "variable_key",
+			"value": ""
+		},
+		{
+			"key": "Expected_CarId",
+			"value": ""
+		},
+		{
+			"key": "Expected_Car_Date_Creation",
+			"value": ""
+		},
+		{
+			"key": "Expected_Mileage",
+			"value": ""
+		},
+		{
+			"key": "Expected_Liters",
+			"value": ""
+		},
+		{
+			"key": "Expected_TotalCost",
+			"value": ""
+		}
+	]
+}
